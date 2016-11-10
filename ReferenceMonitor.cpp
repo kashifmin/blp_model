@@ -7,21 +7,25 @@ using namespace std;
 ReferenceMonitor::ReferenceMonitor(){
 	this->objCount = 0;
 	this->subCount = 0;
-
 }
 
 void ReferenceMonitor::createObject(char name[20], int level) {
+	// Create a new Object and add it to our array of objects
 	this->objects[this->objCount++] = new Object(name, level);
 }
 
 void ReferenceMonitor::createSubject(char name[20], int level) {
+	// Create a new Subject and add it to our array of subjects
 	this->subjects[this->subCount++] = new Subject(name, level);
 }
 
+/*
+ * Searches the array of Objects maintained by the ReferenceMonitor
+ * that has its name field matching with the argument 'name'
+ */
 Object* ReferenceMonitor::getObjByName(char name[20]) {
 	int i = 0;
 	while(i < this->objCount) {
-		//cout << "\nComparing "<< name << " and "<< (this->objects[i])->name;
 		if(strcasecmp(name, (this->objects[i])->name) == 0)
 			return this->objects[i++];
 		i++;
@@ -29,6 +33,10 @@ Object* ReferenceMonitor::getObjByName(char name[20]) {
 	return NULL;
 }
 
+/*
+ * Searches the array of Subjects maintained by the ReferenceMonitor
+ * that has its name field matching with the argument 'name'
+ */
 Subject* ReferenceMonitor::getSubByName(char name[20]) {
 	int i = 0;
 	while(i < this->subCount) {
@@ -39,12 +47,28 @@ Subject* ReferenceMonitor::getSubByName(char name[20]) {
 	return NULL;
 }
 
+/*
+ * Recieves an Instruction object from SecureSystem
+ * and decides whether to READ or WRITE
+ */
+void ReferenceMonitor::executeInstruction(Instruction *ins) {
+	if(ins->type == 0) {
+		this->executeRead(ins->subjectName, ins->objectName);
+	} else {
+		this->executeWrite(ins->subjectName, ins->objectName, ins->value);
+	}
+}
+
+/*
+ * Allows a subject to read a value from an object if the
+ * access labels of the both allow reading by the policies of BLP model.
+ */
 void ReferenceMonitor::executeRead(char subName[20], char objName[30]) {
 
 	Subject *subject = getSubByName(subName);
 	Object *object = getObjByName(objName);
 
-	if(subject == NULL) {
+	if(subject == NULL) { // if a subject with subName does not exist
 		cout << "\nexecWrite: Invalid Subject name: " << subName;
 		return;
 	}
@@ -54,16 +78,17 @@ void ReferenceMonitor::executeRead(char subName[20], char objName[30]) {
 		return;
 	}
 
+	/* Allow READ only if the subject has a higher access level than the object */
 	if(subject->getLevel() >= object->getLevel()) {
 		// Grant access
 		subject->readObject(object);
 		cout << "\nAcess Granted: " << subName << " reads " << objName;
+		this->printState();
 	} else {
 		//Access denied
 		cout << "\nAccess DENIED! " << subName << " reads " << objName; 
 
 	}
-	this->printState();
 }
 
 void ReferenceMonitor::executeWrite(char subName[20], char objName[30], int value) {
@@ -81,17 +106,18 @@ void ReferenceMonitor::executeWrite(char subName[20], char objName[30], int valu
 		return;
 	}
 
+	/* Allow WRITE only if the subject has a lower access level than the object */
 	if(subject->getLevel() <= object->getLevel()) {
 		// Grant access
 		subject->writeObject(object, value);
 		cout << "\nAcess Granted: " << subName << " writes value " << value << " to " << objName; 
+		this->printState();
 	} else {
 		//Access denied
 		cout << "\nAccess DENIED!" << subName << " writes value " << value << " to " << objName;
 
 	}
 
-	this->printState();
 
 }
 
