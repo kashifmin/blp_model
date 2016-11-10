@@ -1,0 +1,24 @@
+write adam aobj
+read adam
+write adam aobj 40 80
+read adam aobj 50
+write sara sobj 10
+read tim sobj
+write kristy jobj 40
+write liz kobj 20
+read sara tobj
+write james lobj 30
+read tim lobj
+write sara kobj 50
+write adam tobj 20
+read liz kobj
+read adam sobj
+read james jobj
+read kristy tobj
+write james aobj 90
+write tim kobj x
+write john jobj 60
+read sara zobj
+exec adam aobj
+Hi sara, This is liz
+The missile launch code is 1234567
