@@ -68,13 +68,8 @@ void ReferenceMonitor::executeRead(char subName[20], char objName[30]) {
 	Subject *subject = getSubByName(subName);
 	Object *object = getObjByName(objName);
 
-	if(subject == NULL) { // if a subject with subName does not exist
-		cout << "\nexecWrite: Invalid Subject name: " << subName;
-		return;
-	}
-
-	if(object == NULL) {
-		cout << "\nexecWrite: Invalid Object name: " << objName;
+	if(subject == NULL || object == NULL ) {
+		cout << "\nBad Instruction : " << "read " << subName << " " << objName;
 		return;
 	}
 
@@ -82,11 +77,11 @@ void ReferenceMonitor::executeRead(char subName[20], char objName[30]) {
 	if(subject->getLevel() >= object->getLevel()) {
 		// Grant access
 		subject->readObject(object);
-		cout << "\nAcess Granted: " << subName << " reads " << objName;
+		cout << "\nAcess Granted : " << subName << " reads " << objName;
 		this->printState();
 	} else {
 		//Access denied
-		cout << "\nAccess DENIED! " << subName << " reads " << objName; 
+		cout << "\nAccess Denied : " << "read " << subName << " " << objName;
 
 	}
 }
@@ -96,13 +91,8 @@ void ReferenceMonitor::executeWrite(char subName[20], char objName[30], int valu
 	Subject *subject = getSubByName(subName);
 	Object *object = getObjByName(objName);
 
-	if(subject == NULL) {
-		cout << "\nexecWrite: Invalid Subject name: " << subName;
-		return;
-	}
-
-	if(object == NULL) {
-		cout << "\nexecWrite: Invalid Object name: " << objName;
+	if(subject == NULL || object == NULL ) {
+		cout << "\nBad Instruction : " << "write " << subName << " " << objName << " " << value;
 		return;
 	}
 
@@ -110,11 +100,11 @@ void ReferenceMonitor::executeWrite(char subName[20], char objName[30], int valu
 	if(subject->getLevel() <= object->getLevel()) {
 		// Grant access
 		subject->writeObject(object, value);
-		cout << "\nAcess Granted: " << subName << " writes value " << value << " to " << objName; 
+		cout << "\nAcess Granted : " << subName << " writes value " << value << " to " << objName; 
 		this->printState();
 	} else {
 		//Access denied
-		cout << "\nAccess DENIED!" << subName << " writes value " << value << " to " << objName;
+		cout << "\nAccess Denied : " << "write " << subName << " " << objName << " " << value;
 
 	}
 
@@ -127,26 +117,26 @@ void ReferenceMonitor::printState() {
 	cout << "\n+------------------------The current state is-------------------------+\n";
 	cout << "| subject |";
 	while(i < subCount) {
-		cout << "\t" << (this->subjects[i])->name << " |";
+		cout << " " << setw(7)<< (this->subjects[i])->name << " |";
 		i++;
 	}
 	i=0;
-	cout << "\n| value |";
+	cout <<"\n| value   |";
 	while(i < subCount) {
-		cout << "\t" << setw(4) << (this->subjects[i])->temp << " |";
+		cout << " " << setw(7) << (this->subjects[i])->temp << " |";
 		i++;
 	}
 	i=0;
 	cout << "\n+---------------------------------------------------------------------+\n";
-	cout << "| object |";
+	cout << "| object  |";
 	while(i < objCount) {
-		cout << "\t" << (this->objects[i])->name << " |";
+		cout << " " << setw(7) << (this->objects[i])->name << " |";
 		i++;
 	}
 	i=0;
-	cout << "\n| value |";
+	cout << "\n| value   |";
 	while(i < subCount) {
-		cout << "\t" << (this->objects[i])->value << " |";
+		cout << " " << setw(7) << (this->objects[i])->value << " |";
 		i++;
 	}
 
