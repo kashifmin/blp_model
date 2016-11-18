@@ -16,4 +16,4 @@ SecureSystem.o: SecureSystem.cpp
 	g++ -c -std=c++0x -Wall  -c -o SecureSystem.o SecureSystem.cpp
 
 clean:
-		rm -rf *.o hash
+		rm -rf *.o securesystem
